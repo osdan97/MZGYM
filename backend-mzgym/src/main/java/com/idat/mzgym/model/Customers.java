@@ -25,8 +25,12 @@ public class Customers extends Account implements Serializable {
     private String lastName;
     @Column(name = "address")
     private String address;
-    @Column(name = "country")
-    private String country;
+    @Column(name = "tipo_document")
+    private String documentType;
+    @Column(name = "number_document")
+    private Long documentNumber;
+    @Column(name = "state_membership")
+    private String membershipState;
 
 
     public Customers(String email, String password){

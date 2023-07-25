@@ -15,7 +15,8 @@ import java.util.List;
 public class CustomerUpdate {
     private String name;
     private String lastName;
-    private String country;
+    private String documentType;
+    private Long documentNumber;
     private String address;
 
 }

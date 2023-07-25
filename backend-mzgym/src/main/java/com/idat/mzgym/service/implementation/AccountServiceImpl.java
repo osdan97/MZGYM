@@ -175,14 +175,13 @@ public class AccountServiceImpl implements AccountService {
         customerDto.setName(name);
         String lastName = customer.getLastName();
         customerDto.setLastName(lastName);
-        String country = customer.getCountry();
-        customerDto.setCountry(country);
+
         String address = customer.getAddress();
         customerDto.setAddress(address);
 
         customerUpdated.setName(name);
         customerUpdated.setLastName(lastName);
-        customerUpdated.setCountry(country);
+
         customerUpdated.setAddress(address);
 
 
