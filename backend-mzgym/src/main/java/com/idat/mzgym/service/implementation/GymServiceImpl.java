@@ -36,7 +36,7 @@ public class GymServiceImpl implements GymService {
     public Gym updateGym(String id, GymDto gymDto) {
         Memberships updateMembership=new Memberships();
         if(!gymRepository.existsById(id)){
-            throw new IllegalStateException("Gym does not exists");
+
         }
         Optional<Gym> existingGym = gymRepository.findById(id);
         Gym gymUpdated = existingGym.get();

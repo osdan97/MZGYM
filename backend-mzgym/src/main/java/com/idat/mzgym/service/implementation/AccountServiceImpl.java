@@ -8,18 +8,20 @@ import com.idat.mzgym.model.Users;
 import com.idat.mzgym.repository.AccountRepository;
 import com.idat.mzgym.repository.CustomerRepository;
 import com.idat.mzgym.repository.UserRepository;
-import com.idat.mzgym.security.jwt.JwtProvider;
+
 import com.idat.mzgym.service.AccountService;
 import com.idat.mzgym.service.EmailService;
 import com.idat.mzgym.util.enums.Role;
+import com.idat.mzgym.util.enums.TransactionState;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+
+
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -30,10 +32,7 @@ import java.util.*;
 public class AccountServiceImpl implements AccountService {
     @Autowired
     private CustomerRepository customerRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JwtProvider jwtProvider;
+
     @Autowired
     private AccountRepository accountRepository;
     @Value("${verification.base-url}")
@@ -55,7 +54,8 @@ public class AccountServiceImpl implements AccountService {
 
         String email = customers.getEmail();
         customerRegistration.setEmail(email);
-        String password = passwordEncoder.encode(customers.getPassword());
+        String password=customers.getPassword();
+
         customerRegistration.setPassword(password);
         String name = customers.getName();
         String lastName = customers.getLastName();
@@ -70,26 +70,22 @@ public class AccountServiceImpl implements AccountService {
         saveCustomer.setPassword(password);
         saveCustomer.setName(name);
         saveCustomer.setLastName(lastName);
+        saveCustomer.setMembershipState("ON_HOLD");
         String customerNumber = anoActual + "-" + numeracion;
         saveCustomer.setRol(Role.USER);
         saveCustomer.setNumber(customerNumber);
         saveCustomer.setVerificationCode(verificationCode);
-        String jwt = jwtProvider.generateToken(saveCustomer);
-        customerRegistration.setToken(jwt);
 
-        try {
-            this.sendVerificationCodeToEmail(saveCustomer);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        customerRegistration.setToken("*");
+
+
         customerRepository.save(saveCustomer);
 
         return customerRegistration;
     }
 
-    @Override
+
+   /* @Override
     public UserRegistrationDto createUser(Users user){
         UserRegistrationDto userRegistration = new UserRegistrationDto();
         int anoActual = LocalDate.now().getYear();
@@ -129,7 +125,7 @@ public class AccountServiceImpl implements AccountService {
         userRepository.save(saveUser);
 
         return userRegistration;
-    }
+    }*/
 
     @Override
     public Optional<Account> findByEmail(String email) {
@@ -145,7 +141,7 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    @Override
+   /* @Override
     public Optional<Account> findByTokenPassword(String tokenPassword) {
         try {
             if (tokenPassword == null || tokenPassword.isEmpty()) {
@@ -179,16 +175,23 @@ public class AccountServiceImpl implements AccountService {
         String address = customer.getAddress();
         customerDto.setAddress(address);
 
+        Long number=customer.getDocumentNumber();
+        customerDto.setDocumentNumber(number);
+
+        String documentType= customer.getDocumentType();
+        customerDto.setDocumentType(documentType);
+
         customerUpdated.setName(name);
         customerUpdated.setLastName(lastName);
-
+        customerUpdated.setDocumentType(documentType);
+        customerUpdated.setDocumentNumber(number);
         customerUpdated.setAddress(address);
 
 
         customerRepository.save(customerUpdated);
 
         return customerDto;
-    }
+    }*/
 
     private String obtenerNumeracionAutomatica() {
         String maxNumber = accountRepository.findByNumber();
@@ -206,7 +209,7 @@ public class AccountServiceImpl implements AccountService {
             }
         }
     }
-
+    /*
     public EmailValues sendVerificationCodeToEmail(Customers emailVerificationCode) throws MessagingException, UnsupportedEncodingException {
 
         String email = emailVerificationCode.getEmail();
@@ -336,7 +339,7 @@ public class AccountServiceImpl implements AccountService {
         String jwt = jwtProvider.generateToken(user);
         user.setToken(jwt);
         return user;
-    }
+    }*/
 
     @Override
     public Optional<Customers> findByUuid(String uuid) {

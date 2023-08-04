@@ -14,22 +14,22 @@ import java.util.Optional;
 public interface AccountService {
     CustomerRegistration createCustomer(Customers customers);
 
-    UserRegistrationDto createUser(Users user);
+   // UserRegistrationDto createUser(Users user);
 
     Optional<Account> findByEmail(String email);
 
-    abstract Optional<Account> findByTokenPassword(String tokenPassword);
+    //abstract Optional<Account> findByTokenPassword(String tokenPassword);
 
-    CustomerUpdate updateCustomer (Customers customer);
+   // CustomerUpdate updateCustomer (Customers customer);
 
     @Transactional
-    boolean verifyAccount(String verificationCode);
+   // boolean verifyAccount(String verificationCode);
 
-    abstract EmailValues sendPasswordRecoveryToEmail(Account emailRecoverPass) throws MessagingException, UnsupportedEncodingException;
+    //abstract EmailValues sendPasswordRecoveryToEmail(Account emailRecoverPass) throws MessagingException, UnsupportedEncodingException;
 
-    Account changePassword(ChangePassword changePassword);
+   // Account changePassword(ChangePassword changePassword);
 
-    Account findByUsernameReturnToken(String username);
+   // Account findByUsernameReturnToken(String username);
 
     Optional<Customers> findByUuid(String uuid);
 }
