@@ -1,5 +1,6 @@
-package pe.idat.frontend.api.models
+package pe.idat.frontend.api
 
+import pe.idat.frontend.api.models.Membership
 import retrofit2.Call
 import retrofit2.http.GET
 

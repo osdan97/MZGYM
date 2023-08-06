@@ -1,60 +1,54 @@
 package pe.idat.frontend.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import pe.idat.frontend.R
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import pe.idat.frontend.api.ApiClient
+import pe.idat.frontend.api.models.Membership
+import pe.idat.frontend.databinding.FragmentMembershipBinding
+import pe.idat.frontend.ui.adapters.MembershipAdapter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MembershipFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MembershipFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentMembershipBinding
+    private val membershipService = ApiClient.membershipService
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_membership, container, false)
+    ): View {
+        binding = FragmentMembershipBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MembershipFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MembershipFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val recyclerView: RecyclerView = binding.recyclerViewMemberships
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // Obtener la lista de membresías y configurar el adaptador
+        membershipService.getMemberships().enqueue(object : Callback<List<Membership>> {
+            override fun onResponse(call: Call<List<Membership>>, response: Response<List<Membership>>) {
+                if (response.isSuccessful) {
+                    val memberships = response.body()
+                    if (memberships != null) {
+                        val adapter = MembershipAdapter(memberships)
+                        recyclerView.adapter = adapter
+                    }
                 }
             }
+
+            override fun onFailure(call: Call<List<Membership>>, t: Throwable) {
+                // Manejar el error de conexión o respuesta del servidor
+            }
+        })
     }
 }
