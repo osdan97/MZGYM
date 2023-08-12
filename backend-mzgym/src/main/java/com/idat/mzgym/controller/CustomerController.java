@@ -27,4 +27,9 @@ public class CustomerController {
         List<Customers> list=customerRepository.findAll();
         return new ResponseEntity(list,HttpStatus.OK);
     }
+    @GetMapping("/findbyid/{id}")
+    public ResponseEntity<?>customerFindById(@PathVariable String id){
+        Customers customer=customerRepository.findByAccountUuid(id).get();
+        return new ResponseEntity(customer,HttpStatus.OK);
+    }
 }

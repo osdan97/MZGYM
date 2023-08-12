@@ -16,6 +16,8 @@ public interface AccountService {
 
    // UserRegistrationDto createUser(Users user);
 
+    String createCustomer2(Customers customers);
+
     Optional<Account> findByEmail(String email);
 
     //abstract Optional<Account> findByTokenPassword(String tokenPassword);
