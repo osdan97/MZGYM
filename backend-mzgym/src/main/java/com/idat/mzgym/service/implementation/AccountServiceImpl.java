@@ -4,7 +4,6 @@ package com.idat.mzgym.service.implementation;
 import com.idat.mzgym.dto.*;
 import com.idat.mzgym.model.Account;
 import com.idat.mzgym.model.Customers;
-import com.idat.mzgym.model.Users;
 import com.idat.mzgym.repository.AccountRepository;
 import com.idat.mzgym.repository.CustomerRepository;
 import com.idat.mzgym.repository.UserRepository;
@@ -12,9 +11,6 @@ import com.idat.mzgym.repository.UserRepository;
 import com.idat.mzgym.service.AccountService;
 import com.idat.mzgym.service.EmailService;
 import com.idat.mzgym.util.enums.Role;
-import com.idat.mzgym.util.enums.TransactionState;
-import jakarta.mail.MessagingException;
-import jakarta.transaction.Transactional;
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +20,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -75,6 +70,7 @@ public class AccountServiceImpl implements AccountService {
         saveCustomer.setRol(Role.USER);
         saveCustomer.setNumber(customerNumber);
         saveCustomer.setVerificationCode(verificationCode);
+        String uuid=saveCustomer.getAccountUuid();
 
         customerRegistration.setToken("*");
 
@@ -85,6 +81,44 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
+    @Override
+    public String createCustomer2(Customers customers){
+        CustomerRegistration customerRegistration = new CustomerRegistration();
+        int anoActual = LocalDate.now().getYear();
+        String numeracion = obtenerNumeracionAutomatica();
+
+        String email = customers.getEmail();
+        customerRegistration.setEmail(email);
+        String password=customers.getPassword();
+
+        customerRegistration.setPassword(password);
+        String name = customers.getName();
+        String lastName = customers.getLastName();
+        String fullName = name + " " + lastName;
+        customerRegistration.setFullName(fullName);
+        String verificationCode = RandomString.make(64);
+        customerRegistration.setVerificationCode(verificationCode);
+
+
+        Customers saveCustomer = new Customers(email, password);
+        saveCustomer.setEmail(email);
+        saveCustomer.setPassword(password);
+        saveCustomer.setName(name);
+        saveCustomer.setLastName(lastName);
+        saveCustomer.setMembershipState("ON_HOLD");
+        String customerNumber = anoActual + "-" + numeracion;
+        saveCustomer.setRol(Role.USER);
+        saveCustomer.setNumber(customerNumber);
+        saveCustomer.setVerificationCode(verificationCode);
+        String uuid=saveCustomer.getAccountUuid();
+
+        customerRegistration.setToken("*");
+
+
+        customerRepository.save(saveCustomer);
+
+        return uuid;
+    }
    /* @Override
     public UserRegistrationDto createUser(Users user){
         UserRegistrationDto userRegistration = new UserRegistrationDto();

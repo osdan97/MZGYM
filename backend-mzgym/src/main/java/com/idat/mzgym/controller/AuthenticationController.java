@@ -3,6 +3,7 @@ package com.idat.mzgym.controller;
 
 import com.idat.mzgym.dto.ChangePassword;
 import com.idat.mzgym.dto.CustomerLoginResponse;
+import com.idat.mzgym.dto.CustomerRegistration;
 import com.idat.mzgym.model.Account;
 import com.idat.mzgym.model.Customers;
 
@@ -48,6 +49,27 @@ public class AuthenticationController {
             return new ResponseEntity<>("This account already exists", HttpStatus.CONFLICT);
         } else {
             return new ResponseEntity<>(accountService.createCustomer(customer), HttpStatus.CREATED);
+        }
+    }
+
+    @PostMapping("/registeruuid")
+    public ResponseEntity<?>registerUuid(@RequestBody Customers customer){
+        if (customer.getEmail() == null || customer.getEmail().isEmpty()) {
+            return new ResponseEntity<>("Email can't be empty", HttpStatus.BAD_REQUEST);
+        }
+        if (customer.getPassword() == null || customer.getPassword().isEmpty()) {
+            return new ResponseEntity<>("Password can't be empty", HttpStatus.BAD_REQUEST);
+        }
+        if (customer.getName() == null || customer.getName().isEmpty()) {
+            return new ResponseEntity<>("Name can't be empty", HttpStatus.BAD_REQUEST);
+        }
+        if (customer.getLastName() == null || customer.getLastName().isEmpty()) {
+            return new ResponseEntity<>("Lastname can't be empty", HttpStatus.BAD_REQUEST);
+        }
+        if (accountService.findByEmail(customer.getEmail()).isPresent()) {
+            return new ResponseEntity<>("This account already exists", HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>(accountService.createCustomer2(customer), HttpStatus.CREATED);
         }
     }
 
