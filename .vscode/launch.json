@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MzgymApplication<mzgym>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.idat.mzgym.MzgymApplication",
+            "projectName": "mzgym",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
